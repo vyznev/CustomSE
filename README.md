@@ -22,6 +22,8 @@ Add a link for "skip but open in another tab" in review
 Add a minimal interface to the search page, with several useful queries  
 ### SearchRedirect
 Redirect homepage to search page 
+### ShortCommentLinks
+Redirects links such as stackoverflow.com/c/1234567 to the comment with Id 1234567
 ### UserPicture	
 Profile picture links to a larger version of self
 ### anonymizeShare
