@@ -18,6 +18,8 @@ Add "NAA" [not an answer] link under answers; UNC [unclear] and VLQ [very low qu
 Format links in posts, similar to a built-in feature but supporting all sites and https 
 ### ReviewSkipOpen	
 Add a link for "skip but open in another tab" in review
+### ScrollReview
+Move the review page to maximize the amount of text visible without scrolling
 ### SearchAsHome
 Add a minimal interface to the search page, with several useful queries  
 ### SearchRedirect
