@@ -14,10 +14,10 @@
 // @exclude     *://stackexchange.*
 // @grant       none
 // @run-at      document-end
-// @version     16.2.3
+// @version     17.1.1
 // ==/UserScript==
 
-var host = window.location.hostname, metahost, chathost;
+var host = window.location.hostname, metahost, chathost, profilePage, userId;
 
 if (/^meta\.stackexchange/.test(host)) {
   metahost = host;
@@ -28,6 +28,10 @@ else if (/^meta\./.test(host)) {
 }
 else {
   metahost = 'meta.'+host;
+}
+profilePage = document.querySelector('.profile-me');
+if (profilePage) {
+  userId = profilePage.href.split('/')[4];
 }
 
 switch (host) {
@@ -87,10 +91,10 @@ function redirect(elem) {
 
 function formInterface() {
   var main = document.querySelector('.search-header');
-  clear(main,0);  
+  clear(main,0);
   var list = document.createElement('div');
 
-  list.appendChild(listItem('Main: ', [
+  var opts = [
     {title: 'new qa', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3A'},
     {title: 'new q', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq'},
     {title: 'new q/tags', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20intags%3Amine'},
@@ -98,11 +102,14 @@ function formInterface() {
     {title: 'new a<=0', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3aa%20score%3a..0%20isaccepted:0'},
     {title: 'active q', url: '//'+host+'/search?tab=active&pagesize=50&q=is%3Aq'},
     {title: '30d no a', url: '//'+host+'/search?tab=newest&pagesize=50&q=created%3a..30d%20score%3a0%20answers%3a0%20'},
-    {title: 'new tags', url: '//'+host+'/tags?tab=new'},
-    {title: '10k', url: '//'+host+'/tools'}   
-  ]));
+    {title: '10k', url: '//'+host+'/tools'}
+  ];
+  if (userId) {
+	opts.push({title: 'flags', url: '//'+host+'/users/flag-summary/'+userId});
+  }
+  list.appendChild(listItem('Main: ', opts));
 
-  var opts = [
+  opts = [
     {title: 'new', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine'}
   ];
   for (var day = 1; day < 11; day++) {
@@ -119,8 +126,8 @@ function formInterface() {
     {title: 'active qa', url: '//'+metahost+'/search?tab=active&pagesize=50&q=is%3A'},
     {title: 'new q', url: '//'+metahost+'/search?tab=newest&pagesize=50&q=is%3Aq'},
     {title: 'comments', url: '', call: function() {getComments(metahost);} },
-    {title: 'site chat', url: '//'+chathost+'?tab=site&sort=active&host='+host},        
-    {title: 'fav chat', url: '//'+chathost+'/chats/join/favorite'}    
+    {title: 'site chat', url: '//'+chathost+'?tab=site&sort=active&host='+host},
+    {title: 'fav chat', url: '//'+chathost+'/chats/join/favorite'}
   ]));
 
   main.appendChild(list);
@@ -190,7 +197,7 @@ function insertComments(posts, comments) {
   var mainbar = document.getElementById('mainbar');
   clear(mainbar, 2);
   var space = newElem('div', 'commentSpace', '', '');
-  space.appendChild(newElem('h3', '', '', 'Comments'));  
+  space.appendChild(newElem('h3', '', '', 'Comments'));
   for (i=0; i<posts.length; i++) {
     title[posts[i].post_id] = posts[i].title;
   }
@@ -203,8 +210,8 @@ function insertComments(posts, comments) {
     comment.style.color = '#333';
     space.appendChild(comment);
   }
-  mainbar.appendChild(space);    
-  window.setTimeout(function(){renderTeX('commentSpace')},500);
+  mainbar.appendChild(space);
+  window.setTimeout(function(){renderTeX('commentSpace');},500);
 }
 
 
