@@ -14,10 +14,10 @@
 // @exclude     *://chat.*
 // @grant       GM_addStyle
 // @run-at      document-start
-// @version     16.4.1
+// @version     17.2.1
 // ==/UserScript==
 
-GM_addStyle('#hireme, #explore-tags, #hot-network-questions, #newsletter-ad, #ignored-footer, .bottom-notice, .adzerk-vote  {display: none;} .icon-achievements, .icon-flag, .cite-link {  display: none !important; }  .downvoted-answer { opacity: 1 !important; } div.tagged-interesting {  background-color: #fff !important; }');
+GM_addStyle('.topbar, #header, .so-header, #hireme, #explore-tags, #hot-network-questions, #newsletter-ad, #ignored-footer, .bottom-notice, .adzerk-vote  {display: none;} .icon-achievements, .icon-flag, .cite-link {  display: none !important; }  .downvoted-answer { opacity: 1 !important; } div.tagged-interesting {  background-color: #fff !important; }');
 
 if (/^math\./.test(window.location.hostname)) {
   GM_addStyle('.result-link a:visited {color: #507070 !important;}');
