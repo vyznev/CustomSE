@@ -14,7 +14,7 @@
 // @exclude     *://stackexchange.*
 // @grant       none
 // @run-at      document-end
-// @version     17.1.1
+// @version     17.2.1
 // ==/UserScript==
 
 var host = window.location.hostname, metahost, chathost, profilePage, userId;
@@ -29,7 +29,7 @@ else if (/^meta\./.test(host)) {
 else {
   metahost = 'meta.'+host;
 }
-profilePage = document.querySelector('.profile-me');
+profilePage = document.querySelector('.profile-me') || document.querySelector('.my-profile');
 if (profilePage) {
   userId = profilePage.href.split('/')[4];
 }
@@ -91,7 +91,7 @@ function redirect(elem) {
 
 function formInterface() {
   var main = document.querySelector('.search-header');
-  clear(main,0);
+  clear(main, 0);
   var list = document.createElement('div');
 
   var opts = [
@@ -102,11 +102,9 @@ function formInterface() {
     {title: 'new a<=0', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3aa%20score%3a..0%20isaccepted:0'},
     {title: 'active q', url: '//'+host+'/search?tab=active&pagesize=50&q=is%3Aq'},
     {title: '30d no a', url: '//'+host+'/search?tab=newest&pagesize=50&q=created%3a..30d%20score%3a0%20answers%3a0%20'},
-    {title: '10k', url: '//'+host+'/tools'}
+    {title: '10k', url: '//'+host+'/tools'},
+    {title: 'elect', url: '//'+host+'/election'}
   ];
-  if (userId) {
-	opts.push({title: 'flags', url: '//'+host+'/users/flag-summary/'+userId});
-  }
   list.appendChild(listItem('Main: ', opts));
 
   opts = [
@@ -121,14 +119,20 @@ function formInterface() {
   opts.push({title: 'rnd', url: '//'+host+'/search?tab=votes&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine%20created%3A' + Math.floor(1000*Math.random()+1) + 'd' });
   list.appendChild(listItem('Unanswered/tags: ', opts));
 
-  list.appendChild(listItem('Meta/Chat: ', [
+  opts = [
     {title: 'new qa', url: '//'+metahost+'/search?tab=newest&pagesize=50&q=is%3A'},
     {title: 'active qa', url: '//'+metahost+'/search?tab=active&pagesize=50&q=is%3A'},
     {title: 'new q', url: '//'+metahost+'/search?tab=newest&pagesize=50&q=is%3Aq'},
     {title: 'comments', url: '', call: function() {getComments(metahost);} },
-    {title: 'site chat', url: '//'+chathost+'?tab=site&sort=active&host='+host},
-    {title: 'fav chat', url: '//'+chathost+'/chats/join/favorite'}
-  ]));
+    {title: 'chat', url: '//'+chathost+'?tab=site&sort=active&host='+host},
+  ];
+  if (userId) {
+	opts.push({title: 'flags', url: '//'+host+'/users/flag-summary/'+userId});
+	var repElem = document.querySelector('.reputation') || document.querySelector('.-rep');
+	var rep = repElem ? repElem.textContent.replace(/\D/g, '') : 'user';
+	opts.push({title: rep, url: '//'+host+'/users/'+userId});
+  }
+  list.appendChild(listItem('Meta/Chat/User: ', opts));
 
   main.appendChild(list);
 }
