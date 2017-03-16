@@ -14,7 +14,7 @@
 // @exclude     *://stackexchange.*
 // @grant       none
 // @run-at      document-end
-// @version     17.2.1
+// @version     17.3.1
 // ==/UserScript==
 
 var host = window.location.hostname, metahost, chathost, profilePage, userId;
@@ -22,12 +22,12 @@ var host = window.location.hostname, metahost, chathost, profilePage, userId;
 if (/^meta\.stackexchange/.test(host)) {
   metahost = host;
 }
-else if (/^meta\./.test(host)) {
+else if (/meta\.stackexchange/.test(host)) {
   metahost = host;
-  host = host.slice(5);
+  host = host.replace(/\bmeta\./, '');
 }
 else {
-  metahost = 'meta.'+host;
+  metahost = host.replace(/(\w+\.\w+$)/, 'meta.$1');
 }
 profilePage = document.querySelector('.profile-me') || document.querySelector('.my-profile');
 if (profilePage) {
@@ -95,42 +95,42 @@ function formInterface() {
   var list = document.createElement('div');
 
   var opts = [
-    {title: 'new qa', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3A'},
-    {title: 'new q', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq'},
-    {title: 'new q/tags', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20intags%3Amine'},
-    {title: 'new a', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3aa'},
-    {title: 'new a<=0', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3aa%20score%3a..0%20isaccepted:0'},
-    {title: 'active q', url: '//'+host+'/search?tab=active&pagesize=50&q=is%3Aq'},
-    {title: '30d no a', url: '//'+host+'/search?tab=newest&pagesize=50&q=created%3a..30d%20score%3a0%20answers%3a0%20'},
-    {title: '10k', url: '//'+host+'/tools'},
-    {title: 'elect', url: '//'+host+'/election'}
+    {title: 'new qa', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3A'},
+    {title: 'new q', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3Aq'},
+    {title: 'new q/tags', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20intags%3Amine'},
+    {title: 'new a', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3aa'},
+    {title: 'new a<=0', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3aa%20score%3a..0%20isaccepted:0'},
+    {title: 'active q', url: 'https://'+host+'/search?tab=active&pagesize=50&q=is%3Aq'},
+    {title: '30d no a', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=created%3a..30d%20score%3a0%20answers%3a0%20'},
+    {title: '10k', url: 'https://'+host+'/tools'},
+    {title: 'elect', url: 'https://'+host+'/election'}
   ];
   list.appendChild(listItem('Main: ', opts));
 
   opts = [
-    {title: 'new', url: '//'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine'}
+    {title: 'new', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine'}
   ];
   for (var day = 1; day < 11; day++) {
     var opt = {};
     opt.title = day + (day<=1 ? 'd ago' : 'd');
-    opt.url = '//'+host+'/search?tab=votes&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine%20created%3A' + day + 'd';
+    opt.url = 'https://'+host+'/search?tab=votes&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine%20created%3A' + day + 'd';
     opts.push(opt);
   }
-  opts.push({title: 'rnd', url: '//'+host+'/search?tab=votes&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine%20created%3A' + Math.floor(1000*Math.random()+1) + 'd' });
+  opts.push({title: 'rnd', url: 'https://'+host+'/search?tab=votes&pagesize=50&q=is%3Aq%20answers%3A0+closed%3A0+score%3A0..+intags%3Amine%20created%3A' + Math.floor(1000*Math.random()+1) + 'd' });
   list.appendChild(listItem('Unanswered/tags: ', opts));
 
   opts = [
-    {title: 'new qa', url: '//'+metahost+'/search?tab=newest&pagesize=50&q=is%3A'},
-    {title: 'active qa', url: '//'+metahost+'/search?tab=active&pagesize=50&q=is%3A'},
-    {title: 'new q', url: '//'+metahost+'/search?tab=newest&pagesize=50&q=is%3Aq'},
+    {title: 'new qa', url: 'https://'+metahost+'/search?tab=newest&pagesize=50&q=is%3A'},
+    {title: 'active qa', url: 'https://'+metahost+'/search?tab=active&pagesize=50&q=is%3A'},
+    {title: 'new q', url: 'https://'+metahost+'/search?tab=newest&pagesize=50&q=is%3Aq'},
     {title: 'comments', url: '', call: function() {getComments(metahost);} },
-    {title: 'chat', url: '//'+chathost+'?tab=site&sort=active&host='+host},
+    {title: 'chat', url: 'https://'+chathost+'?tab=site&sort=active&host='+host},
   ];
   if (userId) {
-	opts.push({title: 'flags', url: '//'+host+'/users/flag-summary/'+userId});
+	opts.push({title: 'flags', url: 'https://'+host+'/users/flag-summary/'+userId});
 	var repElem = document.querySelector('.reputation') || document.querySelector('.-rep');
 	var rep = repElem ? repElem.textContent.replace(/\D/g, '') : 'user';
-	opts.push({title: rep, url: '//'+host+'/users/'+userId});
+	opts.push({title: rep, url: 'https://'+host+'/users/'+userId});
   }
   list.appendChild(listItem('Meta/Chat/User: ', opts));
 
@@ -181,7 +181,7 @@ function newLink(href,eText) {
 
 
 function getComments(site) {
-  var callUrl = '//api.stackexchange.com/2.2/comments?order=desc&sort=creation&site='+site+'&filter=!.Fjs-H6J376m9aetgaQZH08nWrXrl&key=Av*EXI9lCxn2GVGuusoMvA((';
+  var callUrl = 'https://api.stackexchange.com/2.2/comments?order=desc&sort=creation&site='+site+'&filter=!.Fjs-H6J376m9aetgaQZH08nWrXrl&key=Av*EXI9lCxn2GVGuusoMvA((';
   getJSON(callUrl, function(e) { grabPosts(e.currentTarget.response.items, site); });
 }
 
@@ -191,7 +191,7 @@ function grabPosts(comments, site) {
   for (i = 0; i<comments.length; i++) {
     posts.push(comments[i].post_id);
   }
-  var callUrl = '//api.stackexchange.com/2.2/posts/'+posts.join(';')+'?site='+site+'&filter=!0S26ZGcmktzDMF_Kc3b54OP(P&key=Av*EXI9lCxn2GVGuusoMvA((';
+  var callUrl = 'https://api.stackexchange.com/2.2/posts/'+posts.join(';')+'?site='+site+'&filter=!0S26ZGcmktzDMF_Kc3b54OP(P&key=Av*EXI9lCxn2GVGuusoMvA((';
   getJSON(callUrl, function(e) { insertComments(e.currentTarget.response.items, comments); });
 }
 
