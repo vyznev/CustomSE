@@ -14,7 +14,7 @@
 // @exclude     *://stackexchange.*
 // @grant       none
 // @run-at      document-end
-// @version     17.3.1
+// @version     17.3.2
 // ==/UserScript==
 
 var host = window.location.hostname, metahost, chathost, profilePage, userId;
@@ -22,7 +22,7 @@ var host = window.location.hostname, metahost, chathost, profilePage, userId;
 if (/^meta\.stackexchange/.test(host)) {
   metahost = host;
 }
-else if (/meta\.stackexchange/.test(host)) {
+else if (/\bmeta\./.test(host)) {
   metahost = host;
   host = host.replace(/\bmeta\./, '');
 }
