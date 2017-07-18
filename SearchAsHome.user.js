@@ -14,7 +14,7 @@
 // @exclude     *://stackexchange.*
 // @grant       none
 // @run-at      document-end
-// @version     17.3.2
+// @version     17.7.1
 // ==/UserScript==
 
 var host = window.location.hostname, metahost, chathost, profilePage, userId;
@@ -103,7 +103,8 @@ function formInterface() {
     {title: 'active q', url: 'https://'+host+'/search?tab=active&pagesize=50&q=is%3Aq'},
     {title: '30d no a', url: 'https://'+host+'/search?tab=newest&pagesize=50&q=created%3a..30d%20score%3a0%20answers%3a0%20'},
     {title: '10k', url: 'https://'+host+'/tools'},
-    {title: 'elect', url: 'https://'+host+'/election'}
+    {title: 'elect', url: 'https://'+host+'/election'},
+    {title: 'users', url: 'https://'+host+'/users'}
   ];
   list.appendChild(listItem('Main: ', opts));
 
@@ -125,6 +126,7 @@ function formInterface() {
     {title: 'new q', url: 'https://'+metahost+'/search?tab=newest&pagesize=50&q=is%3Aq'},
     {title: 'comments', url: '', call: function() {getComments(metahost);} },
     {title: 'chat', url: 'https://'+chathost+'?tab=site&sort=active&host='+host},
+    {title: 'review', url: 'https://'+host+'/review'}
   ];
   if (userId) {
 	opts.push({title: 'flags', url: 'https://'+host+'/users/flag-summary/'+userId});
